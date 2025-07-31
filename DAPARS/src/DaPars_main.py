@@ -432,7 +432,7 @@ def De_Novo_3UTR_Coverage_estimation_Genome_for_TCGA_multiple_samples(
         Region_first_100_coverage_all_samples.append(curr_first_100_coverage)
 
     if (sum(np.array(Region_first_100_coverage_all_samples) >= coverage_threshold) >= num_samples 
-    and UTR_end - UTR_start >= 150):
+    and region_end - region_start >= 150):
         
         if curr_strand == "+":
             search_region = list(range(

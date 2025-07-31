@@ -10,12 +10,19 @@ python DaPars_Extract_Anno.py -b INPUT BED FILE -s ANNOTATION FILE -o OUTPUT BED
 
 
 
-python src/DaPars_main.py DATA/DaPars_test_data_configure.txt
+python src/DaPars2_Multi_Sample_Multi_Chr.py DATA/DaPars_test_data_configure.txt
+
+
+
+
+
+
 
 python DaPars_main.py CONFIGURATION FILE
 
 
 
+ python .py Dapars2_configure_file
 
 
 

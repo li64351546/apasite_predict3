@@ -1,0 +1,1 @@
+Gene	fit_value	Predicted_Proximal_APA	Loci	DATA/sample_1_PDUI	DATA/sample_2_PDUI

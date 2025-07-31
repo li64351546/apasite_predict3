@@ -6,16 +6,7 @@ python src/DaPars_Extract_Anno.py -b DATA/hg38_wholeGene_annotation.bed -s DATA/
 
 
 
-
-
-
-
-
-
-0
-
-
-
+python src/Dapars2_Multi_Sample.py DATA/DaPars_test_data_configure.txt chrList.txt
 
 
 
