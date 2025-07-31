@@ -127,7 +127,12 @@ def De_Novo_3UTR_Identification_Loading_Target_Wig_for_TCGA_Multiple_Samples_Mul
     print("All samples Joint Processing %s ..." % curr_processing_chr, file=sys.stderr)
     print("[%s] Loading Coverage ..." % time_now(), file=sys.stderr)
 
-    All_samples_Target_3UTR_coverages, UTR_events_dict = Load_Target_Wig_files_Multiple_threads_shared_dict_sampleid_key(All_Sample_files, Annotated_3UTR_file, Num_threads,curr_processing_chr)
+    (All_samples_Target_3UTR_coverages, UTR_events_dict 
+     )= Load_Target_Wig_files_Multiple_threads_shared_dict_sampleid_key
+    (All_Sample_files,
+      Annotated_3UTR_file,
+        Num_threads,
+        curr_processing_chr)
     All_samples_sequencing_depths = load_sequencing_depth(sequencing_depth_file)
 
     print(All_samples_sequencing_depths)
