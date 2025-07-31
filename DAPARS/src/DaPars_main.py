@@ -10,7 +10,7 @@ from bisect import bisect
 from statsmodels.stats.multitest import multipletests
 
 import math
-
+from DAPARS.src.Load_Target_Wig_files import Load_Target_Wig_files
 
 
 
@@ -510,7 +510,7 @@ def Estimation_abundance(Region_Coverage, break_point):
 
 
     
-def Load_Target_Wig_files(All_Sample_files, Annotated_3UTR_file):
+
 
     UTR_events_dict = {}
     All_Samples_Total_depth = []
