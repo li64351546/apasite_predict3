@@ -221,7 +221,9 @@ def De_Novo_3UTR_Identification_Loading_Target_Wig_for_TCGA_Multiple_Samples_Mai
                 if num_non_zero == num_samples:
                     All_Long_inclusion_ratios = []
                     line_write = [curr_3UTR_id, "%.1f" % select_mean_squared_error, str(selcted_break_point), UTR_pos]
+
                     for i in range(num_samples):
+
                         # 算PDUI long 3'UTR percentage
                         curr_sample_ratio = float(UTR_abundances[0][i])/(float(UTR_abundances[0][i]) + float(UTR_abundances[1][i]))
                         All_Long_inclusion_ratios.append(curr_sample_ratio)
@@ -392,13 +394,18 @@ def get_version():
     
     
 
-def De_Novo_3UTR_Coverage_estimation_Genome_for_TCGA_multiple_samples(curr_3UTR_all_samples_bp_coverage, region_start, region_end,curr_strand,weight_for_second_coverage):
+def De_Novo_3UTR_Coverage_estimation_Genome_for_TCGA_multiple_samples(
+        curr_3UTR_all_samples_bp_coverage,
+        region_start,region_end,
+        curr_strand,
+        All_sample_coverage_weights):
+
     '''For UTR-APA new
-       Load one chromosome by chromosome
-       Just for TCGA data analysis. So no peak evenness checking
-       对于 UTR-APA 新
-逐条加载一条染色体
-仅用于 TCGA 数据分析。因此无需峰均匀度检查
+        Load one chromosome by chromosome
+        Just for TCGA data analysis. So no peak evenness checking
+        对于 UTR-APA 新
+        逐条加载一条染色体
+        仅用于 TCGA 数据分析。因此无需峰均匀度检查
     '''
     coverage_threshold = 20
     search_point_start     = 200
@@ -410,11 +417,15 @@ def De_Novo_3UTR_Coverage_estimation_Genome_for_TCGA_multiple_samples(curr_3UTR_
     Region_mean_Coverages = []
     Region_first_100_coverage_all_samples = []
 
+
+
     for i in range(num_samples):
-        curr_Region_Coverage_raw = curr_3UTR_all_samples_bp_coverage[i]##strand is reversed in load
-        curr_Region_Coverage = curr_Region_Coverage_raw/weight_for_second_coverage[i]
+        ##strand is reversed in load
+        curr_Region_Coverage_raw = curr_3UTR_all_samples_bp_coverage[i]
+        curr_Region_Coverage = curr_Region_Coverage_raw/All_sample_coverage_weights[i]
         Region_mean_Coverages.append(np.mean(curr_Region_Coverage_raw))
         Region_Coverages.append(curr_Region_Coverage)
+
         curr_first_100_coverage = np.mean(curr_Region_Coverage_raw[0:99])
         Region_first_100_coverage_all_samples.append(curr_first_100_coverage)
 
@@ -463,6 +474,10 @@ def De_Novo_3UTR_Coverage_estimation_Genome_for_TCGA_multiple_samples(curr_3UTR_
         selcted_break_point = 'Na'
     
     return select_mean_squared_error,selcted_break_point,UTR_abundances
+
+
+
+
 
 def Estimation_abundance(Region_Coverage, break_point):
     Long_UTR_abun  = np.mean(Region_Coverage[break_point:])
