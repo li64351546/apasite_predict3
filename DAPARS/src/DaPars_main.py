@@ -171,7 +171,8 @@ def De_Novo_3UTR_Identification_Loading_Target_Wig_for_TCGA_Multiple_Samples_Mai
      All_samples_sequencing_depths, 
      UTR_events_dict
      ) = Load_Target_Wig_files(
-         All_Sample_files, Annotated_3UTR_file)
+    All_Sample_files, 
+    Annotated_3UTR_file)
     All_sample_coverage_weights = All_samples_sequencing_depths/np.mean(All_samples_sequencing_depths)
     print("[%s] Loading coverage finished ..." % time_now(), file=sys.stderr)
     
@@ -426,26 +427,40 @@ def De_Novo_3UTR_Coverage_estimation_Genome_for_TCGA_multiple_samples(
         Region_mean_Coverages.append(np.mean(curr_Region_Coverage_raw))
         Region_Coverages.append(curr_Region_Coverage)
 
+        #前100读长
         curr_first_100_coverage = np.mean(curr_Region_Coverage_raw[0:99])
         Region_first_100_coverage_all_samples.append(curr_first_100_coverage)
 
-    if sum(np.array(Region_first_100_coverage_all_samples) >= coverage_threshold) >= num_samples and UTR_end - UTR_start >= 150:
+    if (sum(np.array(Region_first_100_coverage_all_samples) >= coverage_threshold) >= num_samples 
+    and UTR_end - UTR_start >= 150):
+        
         if curr_strand == "+":
-            search_region = list(range(region_start+search_point_start, UTR_end-search_point_end+1))
+            search_region = list(range(
+                region_start+search_point_start, 
+                region_end-search_point_end+1
+                ))
         else:
-            search_region = list(range(region_end - search_point_start, UTR_start+search_point_end-1, -1))
+            search_region = list(range(
+                region_end - search_point_start,
+                region_start+search_point_end-1, -1
+                ))
         
         search_region_start = search_point_start
         search_region_end   = region_end - region_start - search_point_end
         Mean_squared_error_list  = []
         Estimated_3UTR_abundance_list = []
 
-        for curr_point in range(search_region_start, search_region_end+1):
-            curr_search_point = curr_point
+        for curr_search_point in range(search_region_start, search_region_end+1):
             All_samples_result = [[],[],[]]
 
             for curr_sample_region_coverage in Region_Coverages:
-                Mean_Squared_error,Long_UTR_abun,Short_UTR_abun = Estimation_abundance(curr_sample_region_coverage, curr_search_point)
+
+                (Mean_Squared_error,
+                 Long_UTR_abun,Short_UTR_abun
+                 ) = Estimation_abundance(
+                    curr_sample_region_coverage,
+                      curr_search_point)
+                
                 All_samples_result[0].append(Mean_Squared_error)
                 All_samples_result[1].append(Long_UTR_abun)
                 All_samples_result[2].append(Short_UTR_abun)
@@ -480,10 +495,13 @@ def De_Novo_3UTR_Coverage_estimation_Genome_for_TCGA_multiple_samples(
 
 
 def Estimation_abundance(Region_Coverage, break_point):
+    
     Long_UTR_abun  = np.mean(Region_Coverage[break_point:])
     Short_UTR_abun = np.mean(Region_Coverage[0:break_point] - Long_UTR_abun)
     if Short_UTR_abun < 0:
         Short_UTR_abun = 0
+    
+    # 算MSE
     Coverage_diff  = Region_Coverage[0:break_point] - Long_UTR_abun - Short_UTR_abun
     Coverage_diff= np.append(Coverage_diff, Region_Coverage[break_point:] - Long_UTR_abun)
     Mean_Squared_error = np.mean(Coverage_diff**2)
