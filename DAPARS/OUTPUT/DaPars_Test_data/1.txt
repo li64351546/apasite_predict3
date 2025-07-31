@@ -1,0 +1,8 @@
+Gene	fit_value	Predicted_Proximal_APA	Loci	A_1_long_exp	A_1_short_exp	A_1_PDUI	B_1_long_exp	B_1_short_exp	B_1_PDUI	Group_A_Mean_PDUI	Group_B_Mean_PDUI	PDUI_Group_diff	P_val	adjusted.P_val	Pass_Filter
+NM_020137|GRIPAP1|chrX|-	
+487.3	
+48830474	
+chrX:48830134-48830697	
+130.57	90.39	
+0.59	91.59	7
+2.93	0.56	0.59	0.56	0.03	0.532051246959	0.674459015662	N

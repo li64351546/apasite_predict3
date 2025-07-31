@@ -184,9 +184,12 @@ def De_Novo_3UTR_Identification_Loading_Target_Wig_for_TCGA_Multiple_Samples_Mai
         curr_strand  = curr_3UTR_structure[-2]
         UTR_pos = curr_3UTR_structure[-1]
 
-        if curr_3UTR_id in All_samples_Target_3UTR_coverages:
 
+        if curr_3UTR_id in All_samples_Target_3UTR_coverages:
             curr_3UTR_coverage_wig = All_samples_Target_3UTR_coverages[curr_3UTR_id]
+
+            
+            # 当前3UTR所有样本取出来
             curr_3UTR_all_samples_bp_coverage = []
             for curr_sample_curr_3UTR_coverage_wig in curr_3UTR_coverage_wig: 
             
@@ -197,14 +200,15 @@ def De_Novo_3UTR_Identification_Loading_Target_Wig_for_TCGA_Multiple_Samples_Mai
                     )
                 curr_3UTR_all_samples_bp_coverage.append(curr_3UTR_curr_sample_bp_coverage)
             
-            # 从头3UTR读长估计
+
+            # 从头3UTR丰度估计
             # De_Novo_3UTR_Coverage_estimation
             (select_mean_squared_error,
-             selcted_break_point,UTR_abundances
+             selcted_break_point,
+             UTR_abundances
              ) = De_Novo_3UTR_Coverage_estimation_Genome_for_TCGA_multiple_samples(
             curr_3UTR_all_samples_bp_coverage,
-            region_start,
-            region_end,
+            region_start,region_end,
             curr_strand,
             All_sample_coverage_weights)
             
@@ -213,20 +217,24 @@ def De_Novo_3UTR_Identification_Loading_Target_Wig_for_TCGA_Multiple_Samples_Mai
                 Long_3UTR_exp_all = np.array(UTR_abundances[0])
                 Short_3UTR_exp_all = np.array(UTR_abundances[1])
                 num_non_zero = sum((Long_3UTR_exp_all + Short_3UTR_exp_all)>0)
+
                 if num_non_zero == num_samples:
                     All_Long_inclusion_ratios = []
                     line_write = [curr_3UTR_id, "%.1f" % select_mean_squared_error, str(selcted_break_point), UTR_pos]
                     for i in range(num_samples):
-                        curr_sample_ratio = float(UTR_abundances[0][i])/(float(UTR_abundances[0][i]) + float(UTR_abundances[1][i]))##long 3'UTR percentage
+                        # 算PDUI long 3'UTR percentage
+                        curr_sample_ratio = float(UTR_abundances[0][i])/(float(UTR_abundances[0][i]) + float(UTR_abundances[1][i]))
                         All_Long_inclusion_ratios.append(curr_sample_ratio)
+
                         line_write.append("%.2f" % UTR_abundances[0][i])
                         line_write.append("%.2f" % UTR_abundances[1][i])
                         line_write.append("%.2f" % curr_sample_ratio)
                     
+                    # 算差异？
+                    # inclusion ratio Group包含率组
                     Group1_IR = All_Long_inclusion_ratios[:num_group_1]
                     Group2_IR = All_Long_inclusion_ratios[num_group_1:]
                     inclusion_ratio_Group_diff = np.mean(np.array(Group1_IR)) - np.mean(np.array(Group2_IR))
-                    
                     line_write.append("%.2f" % inclusion_ratio_Group_diff)
                     
                     Output_result.writelines( '\t'.join(line_write)+'\n')
